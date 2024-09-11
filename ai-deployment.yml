@@ -1,0 +1,40 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-text-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-text-generator
+  template:
+    metadata:
+      labels:
+        app: ai-text-generator
+    spec:
+      containers:
+      - name: ai-text-generator
+        image: docker.io/aryansr/gen-ai-app:latest
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "1"
+            memory: "2Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-text-generator-service
+spec:
+  selector:
+    app: ai-text-generator
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
+  type: LoadBalancer
